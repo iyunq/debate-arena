@@ -13,7 +13,7 @@ async function callMiMo(
   messages: Message[],
   apiKey: string,
   maxTokens: number = config.mimo.maxTokens
-): Promise<string> {
+): Promise<{ content: string; usage: { prompt_tokens: number; completion_tokens: number; total_tokens: number } }> {
   const response = await fetch(`${config.mimo.baseUrl}/chat/completions`, {
     method: 'POST',
     headers: {
@@ -35,7 +35,10 @@ async function callMiMo(
   }
 
   const data = await response.json();
-  return data.choices[0]?.message?.content || 'No response generated.';
+  return {
+    content: data.choices[0]?.message?.content || 'No response generated.',
+    usage: data.usage || { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
+  };
 }
 
 export async function POST(request: NextRequest) {
@@ -60,7 +63,7 @@ export async function POST(request: NextRequest) {
         }
       ];
 
-      const synthesis = await callMiMo(synthesisMessages, apiKey, config.debate.maxTokensSynthesis);
+      const synthesisResult = await callMiMo(synthesisMessages, apiKey, config.debate.maxTokensSynthesis);
 
       return NextResponse.json({
         agentId: 'synthesizer',
@@ -68,7 +71,8 @@ export async function POST(request: NextRequest) {
         agentRole: synthesizer.role,
         agentAvatar: synthesizer.avatar,
         agentColor: synthesizer.color,
-        content: synthesis,
+        content: synthesisResult.content,
+        usage: synthesisResult.usage,
         round: 0,
         timestamp: Date.now(),
       });
@@ -99,7 +103,7 @@ export async function POST(request: NextRequest) {
       }
     ];
 
-    const content = await callMiMo(debateMessages, apiKey, config.debate.maxTokensPerAgent);
+    const debateResult = await callMiMo(debateMessages, apiKey, config.debate.maxTokensPerAgent);
 
     return NextResponse.json({
       agentId: agent.id,
@@ -107,7 +111,8 @@ export async function POST(request: NextRequest) {
       agentRole: agent.role,
       agentAvatar: agent.avatar,
       agentColor: agent.color,
-      content,
+      content: debateResult.content,
+      usage: debateResult.usage,
       round: currentRound,
       timestamp: Date.now(),
     });

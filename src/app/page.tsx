@@ -5,7 +5,8 @@ import { agents, synthesizer, debateTopics, DebateMessage, DebateState } from '@
 import { config, getApiKey, setApiKey } from '@/lib/config';
 import {
   Layers, Settings, X, Zap, ArrowRight, Clock,
-  MessageSquare, Hash, Trophy, Flame, Send, Loader2
+  MessageSquare, Hash, Trophy, Flame, Send, Loader2,
+  BarChart3
 } from 'lucide-react';
 
 const agentColorMap: Record<string, string> = {
@@ -20,7 +21,7 @@ const stats = [
   { label: 'Agents Active', value: '4', icon: Layers },
   { label: 'Debate Rounds', value: '3', icon: MessageSquare },
   { label: 'Tokens Used', value: '0', icon: Zap, dynamic: true },
-  { label: 'Avg Duration', value: '~2min', icon: Clock },
+  { label: 'MiMo Model', value: 'V2.5', icon: BarChart3 },
 ];
 
 export default function Home() {
@@ -37,6 +38,7 @@ export default function Home() {
     phase: 'idle',
     tokensUsed: 0,
   });
+  const [tokenBreakdown, setTokenBreakdown] = useState({ prompt: 0, completion: 0, total: 0 });
   const [isStarting, setIsStarting] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -91,14 +93,22 @@ export default function Home() {
             const error = await response.json();
             throw new Error(error.error || 'Failed to generate response');
           }
-          const message = await response.json();
+          const result = await response.json();
+          const message = { ...result };
+          delete message.usage;
           currentMessages = [...currentMessages, message];
+          const usage = result.usage || { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 };
           setDebateState(prev => ({
             ...prev,
             messages: [...currentMessages],
             currentRound: round,
             currentAgentIndex: agentIdx,
-            tokensUsed: prev.tokensUsed + estimateTokens(message.content),
+            tokensUsed: prev.tokensUsed + (usage.total_tokens || estimateTokens(result.content)),
+          }));
+          setTokenBreakdown(prev => ({
+            prompt: prev.prompt + (usage.prompt_tokens || 0),
+            completion: prev.completion + (usage.completion_tokens || 0),
+            total: prev.total + (usage.total_tokens || 0),
           }));
           await new Promise(resolve => setTimeout(resolve, 400));
         } catch (error: any) {
@@ -121,14 +131,22 @@ export default function Home() {
         const error = await response.json();
         throw new Error(error.error || 'Failed to generate synthesis');
       }
-      const synthesis = await response.json();
+      const synthesisResult = await response.json();
+      const synthesis = { ...synthesisResult };
+      delete synthesis.usage;
       currentMessages = [...currentMessages, synthesis];
+      const synthUsage = synthesisResult.usage || { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 };
       setDebateState(prev => ({
         ...prev,
         messages: [...currentMessages],
         phase: 'complete',
-        tokensUsed: prev.tokensUsed + estimateTokens(synthesis.content),
+        tokensUsed: prev.tokensUsed + (synthUsage.total_tokens || estimateTokens(synthesisResult.content)),
         endTime: Date.now(),
+      }));
+      setTokenBreakdown(prev => ({
+        prompt: prev.prompt + (synthUsage.prompt_tokens || 0),
+        completion: prev.completion + (synthUsage.completion_tokens || 0),
+        total: prev.total + (synthUsage.total_tokens || 0),
       }));
     } catch (error: any) {
       console.error('Synthesis error:', error);
@@ -141,6 +159,7 @@ export default function Home() {
 
   const resetDebate = () => {
     setDebateState({ topic: '', messages: [], currentRound: 1, totalRounds: config.debate.totalRounds, currentAgentIndex: 0, phase: 'idle', tokensUsed: 0 });
+    setTokenBreakdown({ prompt: 0, completion: 0, total: 0 });
     setSelectedTopic('');
   };
 
@@ -345,10 +364,10 @@ export default function Home() {
           <section className="max-w-5xl mx-auto px-8 mb-20">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold mb-2">Built With</h2>
-              <p className="text-sm text-[var(--text-secondary)]">OpenAI-compatible API — works with any LLM provider</p>
+              <p className="text-sm text-[var(--text-secondary)]">Powered by Xiaomi MiMo Reasoning Engine</p>
             </div>
             <div className="flex justify-center gap-6 flex-wrap">
-              {['Next.js 16', 'TypeScript', 'Tailwind CSS', 'OpenAI API', 'Vercel'].map((t) => (
+              {['Next.js 16', 'TypeScript', 'Tailwind CSS', 'MiMo API', 'Vercel'].map((t) => (
                 <div key={t} className="px-4 py-2 glass rounded-lg text-xs text-[var(--text-secondary)]">
                   {t}
                 </div>
@@ -502,7 +521,7 @@ export default function Home() {
                   { value: debateState.messages.length, label: 'Arguments', color: 'var(--accent-blue)' },
                   { value: debateState.totalRounds, label: 'Rounds', color: 'var(--accent-purple)' },
                   { value: `${Math.round((debateState.endTime - debateState.startTime) / 1000)}s`, label: 'Duration', color: 'var(--accent-green)' },
-                  { value: `${(debateState.tokensUsed / 1000).toFixed(1)}k`, label: 'Tokens', color: 'var(--accent-yellow)' },
+                  { value: `${(debateState.tokensUsed / 1000).toFixed(1)}k`, label: 'Total Tokens', color: 'var(--accent-yellow)' },
                 ].map((stat) => (
                   <div key={stat.label} className="glass rounded-xl p-5 text-center">
                     <p className="text-3xl font-bold mb-1" style={{ color: stat.color }}>{stat.value}</p>
@@ -510,6 +529,18 @@ export default function Home() {
                   </div>
                 ))}
               </div>
+              {tokenBreakdown.total > 0 && (
+                <div className="mt-4 pt-4 border-t border-[var(--border)]">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-[var(--text-muted)]">Token Breakdown</span>
+                    <div className="flex gap-6">
+                      <span className="text-[var(--text-secondary)]">Prompt: <span className="text-[var(--accent-blue)] font-mono">{tokenBreakdown.prompt.toLocaleString()}</span></span>
+                      <span className="text-[var(--text-secondary)]">Completion: <span className="text-[var(--accent-green)] font-mono">{tokenBreakdown.completion.toLocaleString()}</span></span>
+                      <span className="text-[var(--text-secondary)]">Total: <span className="text-[var(--accent-yellow)] font-mono font-semibold">{tokenBreakdown.total.toLocaleString()}</span></span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </main>
