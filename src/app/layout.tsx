@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MiMo Debate Arena | Multi-Agent AI Debate Platform",
-  description: "Watch AI agents debate from multiple perspectives - Optimist, Skeptic, Analyst, and Contrarian - powered by MiMo API",
+  title: "Debate Arena | Multi-Agent AI Debate Platform",
+  description: "Watch AI agents debate from multiple perspectives, powered by MiMo API",
 };
 
 export default function RootLayout({
