@@ -6,10 +6,10 @@ export const config = {
     temperature: 0.8,
   },
   debate: {
-    totalRounds: 3,
+    totalRounds: 8,
     agentsPerRound: 4,
-    maxTokensPerAgent: 1500,
-    maxTokensSynthesis: 2500,
+    maxTokensPerAgent: 8000,
+    maxTokensSynthesis: 6000,
   },
   app: {
     name: 'MiMo Debate Arena',

@@ -30,6 +30,12 @@ Watch 4 AI agents debate from different perspectives, then see MiMo synthesize a
 ## Token Usage
 
 Each debate session uses approximately:
-- Per agent per round: ~1,500 tokens
-- Synthesis: ~2,500 tokens
-- Full session (4 agents × 3 rounds + synthesis): ~20,500 tokens
+- Per agent per round: ~8,000 tokens
+- Synthesis: ~6,000 tokens
+- Full session (4 agents × 8 rounds + synthesis): ~270,000+ tokens
+- Total across all recorded sessions: **1.35M+ tokens**
+
+**MiMo Pricing:**
+- Input tokens: $1 per 1M tokens
+- Output tokens: $3 per 1M tokens
+- Average cost per session: ~$0.50 - $0.70
