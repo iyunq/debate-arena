@@ -221,7 +221,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
-- Built with [MiMo API](https://platform.xiaomimimo.com)
+- Powered by [MiMo API](https://platform.xiaomimimo.com) (user-provided API key required)
 - Inspired by structured debate methodologies and multi-agent reasoning systems
 
 ---
