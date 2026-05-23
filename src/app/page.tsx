@@ -224,7 +224,7 @@ export default function Home() {
             )}
             <Link
               href="/analytics"
-              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg glass-subtle text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-all"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg glass-subtle text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-all"
             >
               <BarChart3 className="w-3.5 h-3.5" />
               <span>Analytics</span>
@@ -828,7 +828,7 @@ export default function Home() {
               <a href="https://platform.xiaomimimo.com" target="_blank" rel="noopener noreferrer" className="footer-link text-[var(--text-secondary)] hover:text-[var(--accent-purple)]">MiMo API</a>
               <a href="https://github.com/farhezam/debate-arena" target="_blank" rel="noopener noreferrer" className="footer-link text-[var(--text-secondary)] hover:text-[var(--accent-purple)]">GitHub</a>
               <span className="text-[var(--text-muted)]">·</span>
-              <span>Built for MiMo 100T Program</span>
+
             </div>
           </div>
         </div>

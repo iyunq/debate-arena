@@ -4,11 +4,9 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Zap, TrendingUp, Clock, BarChart3, ArrowLeft,
-  Calendar, DollarSign, Activity, Layers, MessageSquare,
-  Brain, Target, Sparkles, Award, ChevronRight
+  Calendar, MessageSquare, Brain, ChevronRight
 } from 'lucide-react';
 
-// Mock data untuk demo — token usage 1 juta+ (MiMo pricing: $1/M input, $3/M output)
 const mockSessions = [
   {
     id: 1,
@@ -19,7 +17,7 @@ const mockSessions = [
     tokensUsed: 285000,
     promptTokens: 125000,
     completionTokens: 160000,
-    cost: 0.6050, // $0.125 input + $0.480 output
+    cost: 0.6050,
     agents: ['Dr. Aurora', 'Prof. Shadow', 'Dr. Logic', 'Ms. Paradox'],
   },
   {
@@ -31,7 +29,7 @@ const mockSessions = [
     tokensUsed: 242000,
     promptTokens: 108000,
     completionTokens: 134000,
-    cost: 0.5100, // $0.108 input + $0.402 output
+    cost: 0.5100,
     agents: ['Dr. Aurora', 'Prof. Shadow', 'Dr. Logic', 'Ms. Paradox'],
   },
   {
@@ -43,7 +41,7 @@ const mockSessions = [
     tokensUsed: 318000,
     promptTokens: 142000,
     completionTokens: 176000,
-    cost: 0.6700, // $0.142 input + $0.528 output
+    cost: 0.6700,
     agents: ['Dr. Aurora', 'Prof. Shadow', 'Dr. Logic', 'Ms. Paradox'],
   },
   {
@@ -55,7 +53,7 @@ const mockSessions = [
     tokensUsed: 275000,
     promptTokens: 120000,
     completionTokens: 155000,
-    cost: 0.5850, // $0.120 input + $0.465 output
+    cost: 0.5850,
     agents: ['Dr. Aurora', 'Prof. Shadow', 'Dr. Logic', 'Ms. Paradox'],
   },
   {
@@ -67,7 +65,7 @@ const mockSessions = [
     tokensUsed: 235000,
     promptTokens: 105000,
     completionTokens: 130000,
-    cost: 0.4950, // $0.105 input + $0.390 output
+    cost: 0.4950,
     agents: ['Dr. Aurora', 'Prof. Shadow', 'Dr. Logic', 'Ms. Paradox'],
   },
 ];
@@ -91,124 +89,83 @@ export default function AnalyticsPage() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white">
+    <div className="min-h-screen noise-bg">
       {/* Navigation */}
-      <nav className="border-b border-white/5 backdrop-blur-xl bg-black/20 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <ArrowLeft className="w-5 h-5" />
-            <div className="flex items-center gap-3">
-              <Layers className="w-6 h-6 text-blue-400" />
-              <div>
-                <div className="font-bold text-lg">Debate Arena</div>
-                <div className="text-xs text-white/40">Multi-Agent AI System</div>
+      <header className="sticky top-0 z-40 border-b border-[var(--border)]" style={{ background: 'rgba(6, 6, 10, 0.85)', backdropFilter: 'blur(20px)' }}>
+        <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+            <div className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, var(--accent-blue), var(--accent-purple))' }}>
+                <BarChart3 className="w-3 h-3 text-white" />
               </div>
+              <span className="text-sm font-medium">Analytics</span>
             </div>
           </Link>
-          <div className="flex items-center gap-3">
-            <div className="px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium">
-              Analytics Dashboard
-            </div>
-          </div>
+          <div className="text-xs text-[var(--text-muted)]">Token Usage Dashboard</div>
         </div>
-      </nav>
+      </header>
 
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        {/* Header */}
-        <div className="mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-medium mb-4">
-            <Activity className="w-3 h-3" />
-            TOKEN ANALYTICS
-          </div>
-          <h1 className="text-4xl font-bold mb-3">
-            Usage <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Analytics</span>
-          </h1>
-          <p className="text-white/60 text-lg">
-            Comprehensive token usage metrics and cost analysis powered by MiMo API
-          </p>
-        </div>
-
-        {/* Summary Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="glass rounded-2xl p-6 border border-white/5">
-            <div className="flex items-center justify-between mb-3">
-              <div className="p-2 rounded-lg bg-blue-500/10">
-                <MessageSquare className="w-5 h-5 text-blue-400" />
+      <div className="max-w-5xl mx-auto px-6 py-8">
+        {/* Summary Stats — compact */}
+        <div className="grid grid-cols-3 gap-3 mb-6">
+          <div className="glass rounded-xl p-4 border border-[var(--border)]">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'rgba(59, 130, 246, 0.1)' }}>
+                <MessageSquare className="w-3 h-3 text-blue-400" />
               </div>
-              <TrendingUp className="w-4 h-4 text-green-400" />
+              <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">Sessions</span>
             </div>
-            <div className="text-3xl font-bold mb-1">{totalStats.totalSessions}</div>
-            <div className="text-sm text-white/50">Total Sessions</div>
+            <div className="text-2xl font-bold text-[var(--text-primary)]">{totalStats.totalSessions}</div>
           </div>
-
-          <div className="glass rounded-2xl p-6 border border-white/5">
-            <div className="flex items-center justify-between mb-3">
-              <div className="p-2 rounded-lg bg-purple-500/10">
-                <Zap className="w-5 h-5 text-purple-400" />
+          <div className="glass rounded-xl p-4 border border-[var(--border)]">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'rgba(139, 92, 246, 0.1)' }}>
+                <Zap className="w-3 h-3 text-purple-400" />
               </div>
-              <TrendingUp className="w-4 h-4 text-green-400" />
+              <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">Tokens</span>
             </div>
-            <div className="text-3xl font-bold mb-1">{totalStats.totalTokens.toLocaleString()}</div>
-            <div className="text-sm text-white/50">Total Tokens</div>
+            <div className="text-2xl font-bold text-[var(--text-primary)]">{totalStats.totalTokens.toLocaleString()}</div>
           </div>
-
-          <div className="glass rounded-2xl p-6 border border-white/5">
-            <div className="flex items-center justify-between mb-3">
-              <div className="p-2 rounded-lg bg-green-500/10">
-                <DollarSign className="w-5 h-5 text-green-400" />
+          <div className="glass rounded-xl p-4 border border-[var(--border)]">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: 'rgba(249, 115, 22, 0.1)' }}>
+                <TrendingUp className="w-3 h-3 text-orange-400" />
               </div>
-              <TrendingUp className="w-4 h-4 text-green-400" />
+              <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">Avg / Session</span>
             </div>
-            <div className="text-3xl font-bold mb-1">${totalStats.totalCost.toFixed(4)}</div>
-            <div className="text-sm text-white/50">Total Cost</div>
-          </div>
-
-          <div className="glass rounded-2xl p-6 border border-white/5">
-            <div className="flex items-center justify-between mb-3">
-              <div className="p-2 rounded-lg bg-orange-500/10">
-                <BarChart3 className="w-5 h-5 text-orange-400" />
-              </div>
-              <Activity className="w-4 h-4 text-blue-400" />
-            </div>
-            <div className="text-3xl font-bold mb-1">{totalStats.avgTokensPerSession.toLocaleString()}</div>
-            <div className="text-sm text-white/50">Avg Tokens/Session</div>
+            <div className="text-2xl font-bold text-[var(--text-primary)]">{totalStats.avgTokensPerSession.toLocaleString()}</div>
           </div>
         </div>
 
-        {/* Token Breakdown */}
-        <div className="glass rounded-2xl p-8 border border-white/5 mb-8">
-          <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-            <Brain className="w-5 h-5 text-blue-400" />
+        {/* Token Distribution */}
+        <div className="glass rounded-xl p-5 border border-[var(--border)] mb-6">
+          <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-4 flex items-center gap-2">
+            <Brain className="w-4 h-4 text-blue-400" />
             Token Distribution
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-6">
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-white/60">Prompt Tokens</span>
-                <span className="text-sm font-mono text-blue-400">{totalStats.totalPromptTokens.toLocaleString()}</span>
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs text-[var(--text-secondary)]">Prompt</span>
+                <span className="text-xs font-mono text-blue-400">{totalStats.totalPromptTokens.toLocaleString()}</span>
               </div>
-              <div className="h-2 bg-white/5 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full"
-                  style={{ width: `${(totalStats.totalPromptTokens / totalStats.totalTokens) * 100}%` }}
-                />
+              <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                <div className="h-full rounded-full bg-gradient-to-r from-blue-500 to-blue-400" style={{ width: `${(totalStats.totalPromptTokens / totalStats.totalTokens) * 100}%` }} />
               </div>
-              <div className="text-xs text-white/40 mt-1">
+              <div className="text-[10px] text-[var(--text-muted)] mt-1">
                 {((totalStats.totalPromptTokens / totalStats.totalTokens) * 100).toFixed(1)}% of total
               </div>
             </div>
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-white/60">Completion Tokens</span>
-                <span className="text-sm font-mono text-purple-400">{totalStats.totalCompletionTokens.toLocaleString()}</span>
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs text-[var(--text-secondary)]">Completion</span>
+                <span className="text-xs font-mono text-purple-400">{totalStats.totalCompletionTokens.toLocaleString()}</span>
               </div>
-              <div className="h-2 bg-white/5 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-purple-500 to-purple-400 rounded-full"
-                  style={{ width: `${(totalStats.totalCompletionTokens / totalStats.totalTokens) * 100}%` }}
-                />
+              <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                <div className="h-full rounded-full bg-gradient-to-r from-purple-500 to-purple-400" style={{ width: `${(totalStats.totalCompletionTokens / totalStats.totalTokens) * 100}%` }} />
               </div>
-              <div className="text-xs text-white/40 mt-1">
+              <div className="text-[10px] text-[var(--text-muted)] mt-1">
                 {((totalStats.totalCompletionTokens / totalStats.totalTokens) * 100).toFixed(1)}% of total
               </div>
             </div>
@@ -216,23 +173,23 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Session History */}
-        <div className="glass rounded-2xl p-8 border border-white/5">
-          <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-purple-400" />
+        <div className="glass rounded-xl p-5 border border-[var(--border)]">
+          <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-4 flex items-center gap-2">
+            <Clock className="w-4 h-4 text-purple-400" />
             Session History
           </h2>
-          <div className="space-y-3">
+          <div className="space-y-2">
             {mockSessions.map((session) => (
               <div
                 key={session.id}
-                className="p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all group"
+                className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all group"
               >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <div className="font-semibold text-lg mb-1 group-hover:text-blue-400 transition-colors">
+                <div className="flex items-start justify-between mb-2.5">
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-sm text-[var(--text-primary)] group-hover:text-blue-400 transition-colors truncate">
                       {session.topic}
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-white/50">
+                    <div className="flex items-center gap-3 text-[11px] text-[var(--text-muted)] mt-1">
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
                         {session.date}
@@ -247,24 +204,24 @@ export default function AnalyticsPage() {
                       </span>
                     </div>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-white/20 group-hover:text-white/60 transition-colors" />
+                  <ChevronRight className="w-4 h-4 text-white/20 group-hover:text-white/60 transition-colors shrink-0 ml-2" />
                 </div>
-                <div className="grid grid-cols-3 gap-4 pt-3 border-t border-white/5">
+                <div className="grid grid-cols-3 gap-3 pt-2.5 border-t border-white/5">
                   <div>
-                    <div className="text-xs text-white/40 mb-1">Tokens Used</div>
-                    <div className="font-mono text-sm font-semibold text-purple-400">
+                    <div className="text-[10px] text-[var(--text-muted)] mb-0.5">Tokens</div>
+                    <div className="font-mono text-xs font-semibold text-purple-400">
                       {session.tokensUsed.toLocaleString()}
                     </div>
                   </div>
                   <div>
-                    <div className="text-xs text-white/40 mb-1">Cost</div>
-                    <div className="font-mono text-sm font-semibold text-green-400">
+                    <div className="text-[10px] text-[var(--text-muted)] mb-0.5">Cost</div>
+                    <div className="font-mono text-xs font-semibold text-green-400">
                       ${session.cost.toFixed(4)}
                     </div>
                   </div>
                   <div>
-                    <div className="text-xs text-white/40 mb-1">Breakdown</div>
-                    <div className="text-xs text-white/60">
+                    <div className="text-[10px] text-[var(--text-muted)] mb-0.5">P / C</div>
+                    <div className="text-[11px] text-[var(--text-secondary)] font-mono">
                       {session.promptTokens.toLocaleString()} / {session.completionTokens.toLocaleString()}
                     </div>
                   </div>
@@ -272,13 +229,6 @@ export default function AnalyticsPage() {
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Footer Note */}
-        <div className="mt-8 p-4 rounded-xl bg-blue-500/5 border border-blue-500/10 text-center">
-          <p className="text-sm text-blue-400/80">
-            💡 All metrics are calculated based on MiMo API usage. Token costs may vary based on your plan.
-          </p>
         </div>
       </div>
     </div>
