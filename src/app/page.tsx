@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 import { agents, synthesizer, debateTopics, DebateMessage, DebateState } from '@/lib/agents';
 import { config, getApiKey, setApiKey } from '@/lib/config';
 import {
@@ -221,6 +222,13 @@ export default function Home() {
                 <span className="text-[var(--text-muted)]">No API Key</span>
               </div>
             )}
+            <Link
+              href="/analytics"
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg glass-subtle text-xs text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-all"
+            >
+              <BarChart3 className="w-3.5 h-3.5" />
+              <span>Analytics</span>
+            </Link>
             <button
               onClick={() => setShowSettings(!showSettings)}
               className="p-2 rounded-lg glass-subtle text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-hover)] transition-all"
